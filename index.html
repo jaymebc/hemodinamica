@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dados Hemodinâmicos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f4f8;
+            color: #333;
+        }
+        header {
+            background: linear-gradient(90deg, #2C3E50, #3498DB);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 20px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        }
+        .card h2 {
+            color: #2C3E50;
+            margin-top: 0;
+            text-align: center;
+        }
+        .input-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: flex-start;
+            background-color: #f9fafb;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        .input-column, .result-column {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            flex: 1;
+            min-width: 200px;
+            max-width: 250px;
+            margin: 0 auto;
+        }
+        .input-group, .result-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+            text-align: center;
+            max-width: 200px;
+            white-space: nowrap;
+            color: #2C3E50;
+        }
+        input, span {
+            width: 100%;
+            max-width: 150px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            text-align: center;
+            box-sizing: border-box;
+            display: block;
+            margin: 0 auto;
+            transition: border-color 0.2s ease;
+        }
+        input:focus {
+            border-color: #3498DB;
+            outline: none;
+        }
+        span {
+            background-color: #D8DEE9;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        .error {
+            color: #d32f2f;
+            font-size: 12px;
+            margin-top: 5px;
+            text-align: center;
+        }
+        hr.divider {
+            border: 0;
+            border-top: 1px solid #ccc;
+            margin: 20px 0;
+        }
+        footer {
+            background: linear-gradient(90deg, #2C3E50, #3498DB);
+            color: white;
+            text-align: center;
+            padding: 10px;
+            width: 100%;
+            font-size: 14px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative; /* Alterado de fixed para relative */
+        }
+        footer span {
+            background-color: transparent !important;
+            border: none !important;
+            padding: 0;
+            margin: 0 5px;
+            display: inline;
+            width: auto;
+        }
+        small {
+            font-size: 10px;
+            color: #555;
+            margin-top: 5px;
+            text-align: center;
+            display: block;
+        }
+
+        /* Media Queries para dispositivos móveis e tablets */
+        @media (max-width: 768px) { /* Tablets como iPad */
+            .container {
+                padding: 10px;
+            }
+            .card {
+                padding: 20px;
+            }
+            .input-row {
+                gap: 15px; /* Aumentar o gap para melhor separação quando empilhado */
+                padding: 10px;
+            }
+            .input-column, .result-column {
+                max-width: 100%; /* Ocupar toda a largura disponível */
+                min-width: 0;
+            }
+            input, span {
+                max-width: 100%; /* Campos ocupam toda a largura da coluna */
+            }
+            label {
+                font-size: 14px;
+            }
+            small {
+                font-size: 11px; /* Aumentar um pouco para melhor legibilidade */
+            }
+            header {
+                font-size: 20px;
+                padding: 15px;
+            }
+            footer {
+                font-size: 12px;
+                padding: 8px;
+            }
+        }
+
+        @media (max-width: 480px) { /* Celulares */
+            .container {
+                padding: 5px;
+            }
+            .card {
+                padding: 15px;
+            }
+            .input-row {
+                gap: 20px; /* Mais espaço para separação vertical */
+                padding: 8px;
+            }
+            .input-column, .result-column {
+                max-width: 100%;
+                min-width: 0;
+            }
+            input, span {
+                max-width: 100%;
+            }
+            label {
+                font-size: 13px;
+            }
+            small {
+                font-size: 10px;
+            }
+            header {
+                font-size: 18px;
+                padding: 10px;
+            }
+            footer {
+                font-size: 11px;
+                padding: 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>Dados Hemodinâmicos</header>
+    <div class="container">
+        <!-- Card para Dados Hemodinâmicos -->
+        <div class="card">
+            <h2>Dados Hemodinâmicos</h2>
+            <!-- Primeiro Bloco: Peso e Altura à esquerda, ASC e Consumo de O2 à direita -->
+            <div class="input-row">
+                <div class="input-column">
+                    <div class="input-group">
+                        <label for="altura">Altura (cm):</label>
+                        <input type="text" id="altura" placeholder="Ex.: 170" value="170" onkeypress="restrictInput(event)">
+                        <div class="error" id="erroaltura"></div>
+                    </div>
+                    <div class="input-group">
+                        <label for="peso">Peso (kg):</label>
+                        <input type="text" id="peso" placeholder="Ex.: 80" value="80" onkeypress="restrictInput(event)">
+                        <div class="error" id="erropeso"></div>
+                    </div>
+                </div>
+                <div class="result-column">
+                    <div class="result-group">
+                        <label>Área de Superfície Corporal (m²):</label>
+                        <span id="areaSC">0.00</span>
+                        <small>(1,6–2,0)</small>
+                    </div>
+                    <div class="result-group">
+                        <label>Consumo de O2 (mL/min):</label>
+                        <span id="consumoO2">0.00</span>
+                        <small>(200–300)</small>
+                    </div>
+                </div>
+            </div>
+            <!-- Divisão Estética -->
+            <hr class="divider">
+            <!-- Segundo Bloco: Inputs à esquerda, Valores Calculados à direita -->
+            <div class="input-row">
+                <div class="input-column">
+                    <div class="input-group">
+                        <label for="hemoglobina">Hemoglobina (g/dL):</label>
+                        <input type="text" id="hemoglobina" placeholder="Digite a hemoglobina" value="14" onkeypress="restrictInput(event)">
+                        <div class="error" id="errohemoglobina"></div>
+                    </div>
+                    <div class="input-group">
+                        <label for="sao2">SaO2 (%):</label>
+                        <input type="text" id="sao2" placeholder="Digite a saturação arterial" value="98" onkeypress="restrictInput(event)">
+                        <div class="error" id="errosao2"></div>
+                    </div>
+                    <div class="input-group">
+                        <label for="pao2">PaO2 (mmHg):</label>
+                        <input type="text" id="pao2" placeholder="Digite a pressão arterial" value="100" onkeypress="restrictInput(event)">
+                        <div class="error" id="erropao2"></div>
+                    </div>
+                    <div class="input-group">
+                        <label for="svo2">SvO2 (%):</label>
+                        <input type="text" id="svo2" placeholder="Digite a saturação venosa" value="75" onkeypress="restrictInput(event)">
+                        <div class="error" id="errosvo2"></div>
+                    </div>
+                    <div class="input-group">
+                        <label for="pvo2">PvO2 (mmHg):</label>
+                        <input type="text" id="pvo2" placeholder="Digite a pressão venosa" value="40" onkeypress="restrictInput(event)">
+                        <div class="error" id="erropvo2"></div>
+                    </div>
+                </div>
+                <div class="result-column">
+                    <div class="result-group">
+                        <label>CaO2 (mL/L):</label>
+                        <span id="caO2">0.00</span>
+                        <small>(160–200)</small>
+                    </div>
+                    <div class="result-group">
+                        <label>CvO2 (mL/L):</label>
+                        <span id="cvO2">0.00</span>
+                        <small>(120–150)</small>
+                    </div>
+                    <div class="result-group">
+                        <label>DC (L/min):</label>
+                        <span id="dc">0.00</span>
+                        <small>(4,0–8,0)</small>
+                    </div>
+                    <div class="result-group">
+                        <label>IC (L/min/m²):</label>
+                        <span id="ic">0.00</span>
+                        <small>(2,5–4,0)</small>
+                    </div>
+                </div>
+            </div>
+            <!-- Divisão Estética -->
+            <hr class="divider">
+            <!-- Terceiro Bloco: PAoM e PAD/PVC à esquerda, RVS e IRVS à direita -->
+            <div class="input-row">
+                <div class="input-column">
+                    <div class="input-group">
+                        <label for="paom">PAoM (mmHg):</label>
+                        <input type="text" id="paom" placeholder="Digite a PAoM" value="90" onkeypress="restrictInput(event)">
+                        <div class="error" id="erropaom"></div>
+                    </div>
+                    <div class="input-group">
+                        <label for="padpvc">PAD/PVC (mmHg):</label>
+                        <input type="text" id="padpvc" placeholder="Digite a PAD/PVC" value="10" onkeypress="restrictInput(event)">
+                        <div class="error" id="erropadpvc"></div>
+                    </div>
+                </div>
+                <div class="result-column">
+                    <div class="result-group">
+                        <label>RVS (dyn.sec/cm⁵):</label>
+                        <span id="rvs">0.00</span>
+                        <small>(900–1440)</small>
+                    </div>
+                    <div class="result-group">
+                        <label>IRVS (dyn.sec/cm⁵ x m²):</label>
+                        <span id="irvs">0.00</span>
+                        <small>(1700–2400)</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        Visualizações: <span id="viewCount">0</span> | JBC Informática | 2025
+    </footer>
+
+    <script>
+        // Contador de visualizações usando localStorage
+        let views = localStorage.getItem("pageViews") ? parseInt(localStorage.getItem("pageViews")) : 0;
+        views += 1;
+        localStorage.setItem("pageViews", views);
+        document.getElementById("viewCount").textContent = views;
+
+        // Função para restringir a entrada de caracteres inválidos
+        function restrictInput(event) {
+            const char = String.fromCharCode(event.keyCode || event.which);
+            const input = event.target;
+            const value = input.value + char;
+
+            // Permitir apenas números e uma única vírgula
+            if (!/[0-9,]/.test(char) || (char === ',' && input.value.includes(','))) {
+                event.preventDefault();
+                return false;
+            }
+
+            // Validar o valor completo após a digitação
+            setTimeout(() => validateInput(input), 0);
+        }
+
+        // Função de validação
+        function validateInput(input) {
+            const value = input.value;
+            const id = input.id;
+            const errorElement = document.getElementById(`erro${id}`);
+
+            // Validação: formato correto (números e vírgula)
+            const validFormat = value === "" || /^\d+(,\d*)?$/.test(value);
+            if (!validFormat) {
+                errorElement.textContent = "Erro: Use apenas números e vírgula.";
+                return false;
+            }
+
+            errorElement.textContent = "";
+            calcular();
+            return true;
+        }
+
+        // Função para calcular os valores
+        function calcular() {
+            // Entradas
+            const altura = parseFloat(document.getElementById("altura").value.replace(',', '.')) || 0;
+            const peso = parseFloat(document.getElementById("peso").value.replace(',', '.')) || 0;
+            const hemoglobina = parseFloat(document.getElementById("hemoglobina").value.replace(',', '.')) || 0;
+            const sao2 = parseFloat(document.getElementById("sao2").value.replace(',', '.')) || 0;
+            const pao2 = parseFloat(document.getElementById("pao2").value.replace(',', '.')) || 0;
+            const svo2 = parseFloat(document.getElementById("svo2").value.replace(',', '.')) || 0;
+            const pvo2 = parseFloat(document.getElementById("pvo2").value.replace(',', '.')) || 0;
+            const paom = parseFloat(document.getElementById("paom").value.replace(',', '.')) || 0;
+            const padpvc = parseFloat(document.getElementById("padpvc").value.replace(',', '.')) || 0;
+
+            // Passo 1: Calcular Área de Superfície Corporal (ASC)
+            const areaSC = altura && peso ? 0.007184 * Math.pow(altura, 0.725) * Math.pow(peso, 0.425) : 0;
+            document.getElementById("areaSC").textContent = areaSC.toFixed(2);
+
+            // Passo 2: Calcular Consumo de O2
+            const consumoO2 = areaSC ? 125 * areaSC : 0;
+            document.getElementById("consumoO2").textContent = consumoO2.toFixed(2);
+
+            // Passo 3: Calcular CaO2 e CvO2
+            const caO2 = (hemoglobina * 13.4 * (sao2 / 100)) + (pao2 * 0.0031);
+            const cvO2 = (hemoglobina * 13.4 * (svo2 / 100)) + (pvo2 * 0.0031);
+            document.getElementById("caO2").textContent = caO2.toFixed(2);
+            document.getElementById("cvO2").textContent = cvO2.toFixed(2);
+
+            // Passo 4: Calcular DC (Débito Cardíaco)
+            const dc = (caO2 - cvO2) ? consumoO2 / (caO2 - cvO2) : 0;
+            document.getElementById("dc").textContent = dc.toFixed(2);
+
+            // Passo 5: Calcular IC (Índice Cardíaco) - DC/ASC
+            const ic = areaSC ? dc / areaSC : 0;
+            document.getElementById("ic").textContent = ic.toFixed(2);
+
+            // Passo 6: Calcular RVS (Resistência Vascular Sistêmica)
+            const rvs = dc ? 80 * (paom - padpvc) / dc : 0;
+            document.getElementById("rvs").textContent = rvs.toFixed(2);
+
+            // Passo 7: Calcular IRVS (Índice de Resistência Vascular Sistêmica)
+            const irvs = rvs * areaSC;
+            document.getElementById("irvs").textContent = irvs.toFixed(2);
+        }
+
+        // Adicionar eventos de input para recalcular automaticamente
+        document.getElementById("altura").addEventListener("input", () => {
+            validateInput(document.getElementById("altura"));
+        });
+        document.getElementById("peso").addEventListener("input", () => {
+            validateInput(document.getElementById("peso"));
+        });
+        document.getElementById("hemoglobina").addEventListener("input", () => {
+            validateInput(document.getElementById("hemoglobina"));
+        });
+        document.getElementById("sao2").addEventListener("input", () => {
+            validateInput(document.getElementById("sao2"));
+        });
+        document.getElementById("pao2").addEventListener("input", () => {
+            validateInput(document.getElementById("pao2"));
+        });
+        document.getElementById("svo2").addEventListener("input", () => {
+            validateInput(document.getElementById("svo2"));
+        });
+        document.getElementById("pvo2").addEventListener("input", () => {
+            validateInput(document.getElementById("pvo2"));
+        });
+        document.getElementById("paom").addEventListener("input", () => {
+            validateInput(document.getElementById("paom"));
+        });
+        document.getElementById("padpvc").addEventListener("input", () => {
+            validateInput(document.getElementById("padpvc"));
+        });
+
+        // Calcular valores iniciais
+        calcular();
+    </script>
+</body>
+</html>
